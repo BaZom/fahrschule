@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Entries{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <h1>Minute Entries</h1>
+  <p>{{ user.school.name }}</p>
+</div>
+
+{% include "partials/entries_table.html" with entries=entries show_actions=True %}
+{% endblock %}

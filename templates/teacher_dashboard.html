@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <h1>Teacher Dashboard</h1>
+  <p>{{ user.school.name }}</p>
+</div>
+
+{% if pool %}
+  <section class="stats-grid">
+    <div class="stat"><span>Total</span><strong>{{ status.total_minutes }}</strong></div>
+    <div class="stat"><span>Used</span><strong>{{ status.used_minutes }}</strong></div>
+    <div class="stat"><span>Remaining</span><strong>{{ status.remaining_minutes }}</strong></div>
+  </section>
+
+  <section class="split">
+    <div>
+      <h2>Register minutes</h2>
+      <form method="post" class="form-card">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label for="{{ form.weekly_pool.id_for_label }}">Weekly pool</label>
+        {{ form.weekly_pool }}
+        {{ form.weekly_pool.errors }}
+        <label for="{{ form.minutes_used.id_for_label }}">Minutes used</label>
+        {{ form.minutes_used }}
+        {{ form.minutes_used.errors }}
+        <label for="{{ form.note.id_for_label }}">Note</label>
+        {{ form.note }}
+        {{ form.note.errors }}
+        <button class="button primary" type="submit">Register</button>
+      </form>
+    </div>
+    <div>
+      <h2>Recent entries</h2>
+      {% include "partials/entries_table.html" with entries=recent_entries show_actions=False %}
+    </div>
+  </section>
+{% else %}
+  <div class="empty-state">No weekly pool exists for the current week.</div>
+{% endif %}
+{% endblock %}
