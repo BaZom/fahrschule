@@ -2,12 +2,13 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
+from accounts.views import RoleLoginView
 from exams import views as exam_views
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
+    path("login/", RoleLoginView.as_view(), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("", exam_views.dashboard_redirect, name="dashboard"),
     path("teacher/", exam_views.teacher_dashboard, name="teacher_dashboard"),

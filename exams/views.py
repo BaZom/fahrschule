@@ -12,6 +12,11 @@ from .services import get_current_week_pool, get_pool_status, register_minutes, 
 User = get_user_model()
 
 
+def get_school_pool_cards(school):
+    pools = WeeklyPool.objects.filter(school=school).select_related("created_by")[:12]
+    return [{"pool": pool, "status": get_pool_status(pool)} for pool in pools]
+
+
 def customer_admin_required(view_func):
     @login_required
     def wrapper(request, *args, **kwargs):
@@ -78,15 +83,13 @@ def teacher_dashboard(request):
 @customer_admin_required
 def admin_dashboard(request):
     school = request.user.school
-    pools = WeeklyPool.objects.filter(school=school).select_related("created_by")[:12]
     teachers = User.objects.filter(school=school, role=User.TEACHER).order_by("username")
     entries = MinuteEntry.objects.filter(school=school).select_related("teacher", "weekly_pool")[:25]
-    pool_cards = [{"pool": pool, "status": get_pool_status(pool)} for pool in pools]
 
     return render(
         request,
         "admin_dashboard.html",
-        {"pool_cards": pool_cards, "teachers": teachers, "entries": entries},
+        {"pool_cards": get_school_pool_cards(school), "teachers": teachers, "entries": entries},
     )
 
 
