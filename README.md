@@ -32,6 +32,35 @@ python manage.py migrate
 python manage.py test
 ```
 
+## Deploy on Render
+
+Create a Render PostgreSQL database first, then create a Render Web Service from this GitHub repository.
+
+Use these service settings:
+
+```bash
+Build Command: ./build.sh
+Start Command: gunicorn config.wsgi:application
+```
+
+Set these environment variables on the Render Web Service:
+
+```bash
+DATABASE_URL=<internal Render PostgreSQL URL>
+DJANGO_SECRET_KEY=<generated secret>
+DJANGO_DEBUG=0
+DJANGO_ALLOWED_HOSTS=<your-service-name>.onrender.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-service-name>.onrender.com
+```
+
+After the first deploy, create an admin account in the Render Shell:
+
+```bash
+python manage.py createsuperuser
+```
+
+Render's free PostgreSQL databases are useful for tests and demos, but they expire after 30 days. Use a paid database for real customer data.
+
 ## Notes
 
 - Create schools and initial customer admin users through Django admin or the shell.
